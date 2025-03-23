@@ -4,6 +4,9 @@ version: 0.1.0
 repository: https://github.com/k0zlov/ruta_cli
 homepage: https://github.com/k0zlov/ruta_cli
 
+executables:
+  ruta: ruta_cli
+
 environment:
   sdk: ^3.5.4
 

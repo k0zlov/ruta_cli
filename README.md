@@ -1,39 +1,19 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Ruta CLI
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+The Ruta CLI is a command-line tool for the Ruta framework, inspired
+by [dart_frog](https://github.com/VeryGoodOpenSource/dart_frog). It simplifies the process of building and running Ruta
+servers by providing a set of convenient commands.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **Build Command**: Generate your server code using `build_runner`.
+- **Run Command**: Build and start your Ruta server in one step.
+- **Extensible**: Easily add new commands to fit your workflow.
 
-## Getting started
+## Installation
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the CLI to your machine:
 
-## Usage
+```bash
+dart pub global activate ruta_cli
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
