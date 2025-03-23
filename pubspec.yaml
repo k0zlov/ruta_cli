@@ -1,6 +1,6 @@
 name: ruta_cli
 description: A CLI tool to build and run Ruta servers.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/k0zlov/ruta_cli
 homepage: https://github.com/k0zlov/ruta_cli
 
@@ -13,7 +13,7 @@ environment:
 dependencies:
   args: ^2.5.0          # For parsing CLI arguments
   process_run: ^0.14.0  # For running shell commands (build_runner, dart run)
-  ruta_generator: ^0.1.0
+  ruta_generator: ^0.1.1
 
 dev_dependencies:
   very_good_analysis: ^5.1.0
