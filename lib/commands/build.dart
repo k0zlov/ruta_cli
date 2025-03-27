@@ -5,6 +5,16 @@ import 'package:process_run/process_run.dart';
 
 /// Command for building Ruta server
 class BuildCommand extends Command<void> {
+  BuildCommand() {
+    // Add the optional flag for overwriting the Dockerfile
+    argParser.addFlag(
+      'overwrite-dockerfile',
+      abbr: 'o',
+      help:
+          'If provided, overwrites the existing Dockerfile. Otherwise, it only generates the Dockerfile if it does not exist.',
+    );
+  }
+
   @override
   final name = 'build';
   @override
@@ -66,11 +76,19 @@ EXPOSE 8080
 ENTRYPOINT ["/app/server"]
 ''';
 
-      // Write the Dockerfile to the project directory
       final dockerfile = File('Dockerfile');
-      await dockerfile.writeAsString(dockerfileContents);
 
-      print('Dockerfile created successfully.');
+      // Determine whether to overwrite or skip based on the flag
+      final overwrite = argResults!['overwrite-dockerfile'] as bool;
+
+      if (overwrite || !dockerfile.existsSync()) {
+        await dockerfile.writeAsString(dockerfileContents);
+        print('Dockerfile created successfully.');
+      } else {
+        print(
+          'Dockerfile already exists. Use --overwrite-dockerfile to overwrite it.',
+        );
+      }
     } catch (e) {
       throw Exception('Error running build_runner or creating Dockerfile: $e');
     }

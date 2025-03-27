@@ -1,3 +1,7 @@
+## 0.1.6
+
+- Adding --overwrite-dockerfile flag to build command
+
 ## 0.1.5
 
 - Fixing Dockerfile
