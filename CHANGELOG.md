@@ -1,3 +1,7 @@
+## 0.1.4
+
+- Fixing build commands
+
 ## 0.1.3
 
 - Removing build_runner watch

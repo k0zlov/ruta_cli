@@ -1,6 +1,6 @@
 name: ruta_cli
 description: A CLI tool to build and run Ruta servers.
-version: 0.1.3
+version: 0.1.4
 repository: https://github.com/k0zlov/ruta_cli
 homepage: https://github.com/k0zlov/ruta_cli
 
