@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:process_run/process_run.dart';
 
 /// Command for building and running Ruta server
 class RunCommand extends Command<void> {
@@ -12,30 +12,17 @@ class RunCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final shellSilent = Shell(
-      stdout: File(Platform.isWindows ? 'nul' : '/dev/null').openWrite(),
-      stderr: File(Platform.isWindows ? 'nul' : '/dev/null').openWrite(),
-    );
-
-    print('Generating server...');
     try {
-      await shellSilent
-          .run('dart run build_runner build --delete-conflicting-outputs');
-      print('Build completed successfully.');
-    } catch (e) {
-      throw Exception('Error running build_runner: $e');
-    }
-
-    print('Starting server...');
-    try {
+      print('Starting server...');
       final serverProcess = await Process.start(
         'dart',
         ['run', '--enable-vm-service', '.ruta/server.dart'],
       );
 
-      serverProcess.stdout.pipe(stdout);
-      serverProcess.stderr.pipe(stderr);
+      unawaited(serverProcess.stdout.pipe(stdout));
+      unawaited(serverProcess.stderr.pipe(stderr));
 
+      // Handle Ctrl+C
       ProcessSignal.sigint.watch().listen((_) {
         serverProcess.kill();
         exit(0);
