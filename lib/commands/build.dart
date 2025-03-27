@@ -13,10 +13,7 @@ class BuildCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final shell = Shell(
-      stdout: File(Platform.isWindows ? 'nul' : '/dev/null').openWrite(),
-      stderr: File(Platform.isWindows ? 'nul' : '/dev/null').openWrite(),
-    );
+    final shell = Shell();
 
     print('Generating server...');
     try {
