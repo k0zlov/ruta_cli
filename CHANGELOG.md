@@ -1,3 +1,7 @@
+## 0.1.5
+
+- Fixing Dockerfile
+
 ## 0.1.4
 
 - Fixing build commands

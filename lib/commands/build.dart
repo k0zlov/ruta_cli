@@ -25,40 +25,44 @@ class BuildCommand extends Command<void> {
 
       // Generate the Dockerfile
       const dockerfileContents = '''
-# Use the Dart official image as the base.
+# Use the Dart official image as the base for building the application.
 FROM dart:stable AS build
 
-# Set working directory inside the container
+# Set the working directory inside the container.
 WORKDIR /app
 
-# Copy the pubspec and lock files first to cache dependencies layer
-COPY pubspec.* /app/
+# Copy only pubspec.* files first to leverage Docker build caching for dependencies.
+COPY pubspec.* ./
 
-# Install dependencies.
+# Install Dart dependencies.
 RUN dart pub get
 
-# Copy application files into the container
-COPY . /app/
+# Copy the rest of the application files into the container.
+COPY . .
 
-# Run build_runner to generate server code
+# Run build_runner to generate server code.
 RUN dart run build_runner build --delete-conflicting-outputs
 
-# Build a release version of the application
+# Build a release version of the application.
 RUN dart compile exe .ruta/server.dart -o /app/server
 
-# Use a smaller runtime image for the final container
+# Use a smaller runtime image for the final container.
 FROM dart:stable AS runtime
 
-# Set working directory inside the container
+# Set the working directory inside the container.
 WORKDIR /app
 
-# Copy compiled server from the build stage
+# Copy the compiled server from the build stage.
 COPY --from=build /app/server /app/server
 
-# Expose the port the server listens on
+# Copy essential project files if needed at runtime (optional).
+COPY --from=build /app/pubspec.yaml /app/
+COPY --from=build /app/pubspec.lock /app/
+
+# Expose the port the server will listen on.
 EXPOSE 8080
 
-# Entrypoint to run the server
+# Define the entry point to run the server.
 ENTRYPOINT ["/app/server"]
 ''';
 
