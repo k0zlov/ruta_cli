@@ -5,6 +5,8 @@ import 'package:process_run/process_run.dart';
 
 /// Command for building Ruta server
 class BuildCommand extends Command<void> {
+  /// Constructor for build command
+  /// Adds arguments for the command
   BuildCommand() {
     // Add the optional flag for overwriting the Dockerfile
     argParser.addFlag(
@@ -35,44 +37,53 @@ class BuildCommand extends Command<void> {
 
       // Generate the Dockerfile
       const dockerfileContents = '''
-# Use the Dart official image as the base for building the application.
-FROM dart:stable AS build
+# ========= Stage 1: Dependencies =========
+FROM dart:stable AS dependencies
 
-# Set the working directory inside the container.
 WORKDIR /app
 
-# Copy only pubspec.* files first to leverage Docker build caching for dependencies.
+# Copy only dependency files initially to leverage docker caching
 COPY pubspec.* ./
 
-# Install Dart dependencies.
+# Fetch dependencies
 RUN dart pub get
+RUN dart pub global activate ruta_cli
 
-# Copy the rest of the application files into the container.
+# ========= Stage 2: Code Analysis and Tests =========
+FROM dependencies AS test
+
+# Copy entire source code into the image for testing
 COPY . .
 
-# Run build_runner to generate server code.
-RUN dart run build_runner build --delete-conflicting-outputs
+# Run analysis to ensure code quality (linting, analysis, formatting checks)
+RUN dart analyze
 
-# Build a release version of the application.
+# Run tests to validate the application before building the executable
+RUN dart test
+
+# ========= Stage 3: Build (compile binary) =========
+FROM dependencies AS build
+
+# Copy entire codebase again (after tests have passed)
+COPY . .
+
+# Generate a production build.
+RUN dart pub global run ruta_cli build
+
+# Compile to native executable
 RUN dart compile exe .ruta/server.dart -o /app/server
 
-# Use a smaller runtime image for the final container.
-FROM dart:stable AS runtime
+# ========= Stage 4: Runtime =========
+FROM scratch
 
-# Set the working directory inside the container.
-WORKDIR /app
-
-# Copy the compiled server from the build stage.
+# Copy executable built from previous stage
+COPY --from=build /runtime/ /
 COPY --from=build /app/server /app/server
 
-# Copy essential project files if needed at runtime (optional).
-COPY --from=build /app/pubspec.yaml /app/
-COPY --from=build /app/pubspec.lock /app/
-
-# Expose the port the server will listen on.
+# Define exposed ports, environment, etc.
 EXPOSE 8080
 
-# Define the entry point to run the server.
+# Start your Dart executable
 ENTRYPOINT ["/app/server"]
 ''';
 

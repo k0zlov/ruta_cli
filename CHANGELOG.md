@@ -1,3 +1,8 @@
+## 0.1.7
+
+- Updating Dockerfile
+- Optional hot reload run
+
 ## 0.1.6
 
 - Adding --overwrite-dockerfile flag to build command

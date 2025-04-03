@@ -5,6 +5,15 @@ import 'package:args/command_runner.dart';
 
 /// Command for building and running Ruta server
 class RunCommand extends Command<void> {
+  /// Adds args for the command
+  RunCommand() {
+    argParser.addFlag(
+      'disable-hot-reload',
+      abbr: 'd',
+      help: 'Disables hot reload when running.',
+    );
+  }
+
   @override
   final name = 'run';
   @override
@@ -13,10 +22,19 @@ class RunCommand extends Command<void> {
   @override
   Future<void> run() async {
     try {
+      final disableHotReload = argResults!['disable-hot-reload'] as bool;
+
       print('Starting server...');
       final serverProcess = await Process.start(
         'dart',
-        ['run', '--enable-vm-service', '.ruta/server.dart'],
+        [
+          'run',
+          '.ruta/server.dart',
+          if (!disableHotReload) ...{
+            '--enable-vm-service',
+            '--hot-reload',
+          },
+        ],
       );
 
       unawaited(serverProcess.stdout.pipe(stdout));
