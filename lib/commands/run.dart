@@ -29,11 +29,9 @@ class RunCommand extends Command<void> {
         'dart',
         [
           'run',
+          if (!disableHotReload) '--enable-vm-service',
           '.ruta/server.dart',
-          if (!disableHotReload) ...{
-            '--enable-vm-service',
-            '--hot-reload',
-          },
+          if (!disableHotReload) '--hot-reload',
         ],
       );
 

@@ -1,3 +1,7 @@
+## 0.1.8
+
+- Fixing run options order
+
 ## 0.1.7
 
 - Updating Dockerfile
